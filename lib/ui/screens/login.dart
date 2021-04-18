@@ -1,6 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_app/structure/home.dart';
+
+final auth = FirebaseAuth.instance;
 
 class Login extends StatelessWidget {
+  String _email, _password;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,9 +58,18 @@ class Login extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 40),
                     child: Column(
-                      children: [
-                        inputFile(label: "Email"),
-                        inputFile(label: "Mot de passe", obscureText: true)
+                      children: <Widget>[
+                        inputFile(
+                          label: "Email",
+                          field: TextInputType.emailAddress,
+                          data: _email
+                        ),
+                        inputFile(
+                          label: "Mot de passe",
+                          obscureText: true,
+                          field: TextInputType.visiblePassword,
+                          data: _password
+                        )
                       ],
                     ),
                   ),
@@ -74,7 +89,12 @@ class Login extends StatelessWidget {
                         child: MaterialButton(
                           minWidth: double.infinity,
                           height: 60,
-                          onPressed: (){},
+                          onPressed: (){
+                            auth.signInWithEmailAndPassword(email: _email, password: _password);
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => HomePage())
+                            );
+                          },
                           color: Color(0xff0095FF),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -111,10 +131,10 @@ class Login extends StatelessWidget {
   }
 }
 
-Widget inputFile({label, obscureText = false}){
+Widget inputFile({label, obscureText = false, field, data}){
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
+    children: <Widget>[
       Text(
         label,
         style: TextStyle(
@@ -126,6 +146,12 @@ Widget inputFile({label, obscureText = false}){
       SizedBox(height: 5,),
       TextField(
         obscureText: obscureText,
+        keyboardType: field,
+        onChanged: (String value) async {
+          if(value.trim() != null){
+            return data;
+          }
+        },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           enabledBorder: OutlineInputBorder(
@@ -135,7 +161,7 @@ Widget inputFile({label, obscureText = false}){
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey[400])
-          )
+          ),
         ),
       ),
       SizedBox(height: 10,)
