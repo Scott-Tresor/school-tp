@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/ui/screens/login.dart';
-import 'package:flutter_app/ui/screens/register.dart';
+import 'package:flutter_app/ui/auth/login.dart';
 
-class Home extends StatelessWidget {
+import '../auth/register.dart';
+
+class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,8 +22,7 @@ class Home extends StatelessWidget {
                     "Bienvenue",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 30
-                    ),
+                        fontSize: 25),
                   ),
                   SizedBox(height: 20,),
                   Text(
@@ -30,7 +30,7 @@ class Home extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.grey[700],
-                      fontSize: 15,
+                      fontSize: 14,
                     ),
                   )
                 ],
@@ -43,23 +43,17 @@ class Home extends StatelessWidget {
                     )
                 ),
               ),
-
               Column(
                 children: [
                   MaterialButton(
                     minWidth: double.infinity,
-                    height: 60,
-                    onPressed: (){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Login()
-                          )
-                      );
+                    height: 40,
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => LoginPage()));
                     },
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Colors.black
+                        side: BorderSide(color: Colors.black
                       ),
                       borderRadius: BorderRadius.circular(50)
                     ),
@@ -67,31 +61,26 @@ class Home extends StatelessWidget {
                       "Connexion",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 18
-                      ),
+                          fontSize: 17),
                     ),
                   ),
                   SizedBox(height: 20,),
                   MaterialButton(
                     minWidth: double.infinity,
-                    height: 60,
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Register())
-                      );
+                    height: 40,
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Register()));
                     },
                     color: Color(0xff0095FF),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)
-                    ),
+                        borderRadius: BorderRadius.circular(50)),
                     child: Text(
                       "Enregistrement",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
-                        fontSize: 18
-                      ),
+                          fontSize: 17),
                     ),
                   )
                 ],

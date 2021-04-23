@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app/structure/home.dart';
+import 'package:flutter_app/ui/apps/home.dart';
 
 final auth = FirebaseAuth.instance;
 
-class Login extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   String _email, _password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,18 +89,18 @@ class Login extends StatelessWidget {
                         ),
                         child: MaterialButton(
                           minWidth: double.infinity,
-                          height: 60,
-                          onPressed: (){
-                            auth.signInWithEmailAndPassword(email: _email, password: _password);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => HomePage())
-                            );
-                          },
-                          color: Color(0xff0095FF),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50)
-                          ),
+                        height: 40,
+                        onPressed: () {
+                          auth.signInWithEmailAndPassword(
+                              email: _email, password: _password);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                        },
+                        color: Color(0xff0095FF),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)),
                           child: Text(
                             "Connexion",
                             style: TextStyle(
@@ -111,16 +112,6 @@ class Login extends StatelessWidget {
                         ),
                       ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Vous n'avez pas de compte ?"),
-                      Text("Inscription", style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18
-                      ),)
-                    ],
-                  )
                 ],
               ),
             )
