@@ -1,10 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'file:///D:/DONNEES/PROJETS/flutter_app/lib/ui/components/splash.dart';
+import 'package:flutter_app/models/user.dart';
+import 'package:flutter_app/services/auth/auth.dart';
+import 'package:flutter_app/ui/wrapper.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: SplashPage(),
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(Main());
+}
+
+class Main extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<Users>.value(
+      value: AuthService().user,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: WrapperPage(),
+      ),
+    );
+  }
 }

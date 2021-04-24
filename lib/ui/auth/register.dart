@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_app/services/auth/auth.dart';
 
-class Register extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final AuthService authService = AuthService();
+  final _formKey = GlobalKey<FormState>();
+  String _email = "", _password = "", _prenom = "";
 
   @override
   Widget build(BuildContext context) {
@@ -12,111 +22,166 @@ class Register extends StatelessWidget {
         brightness: Brightness.light,
         backgroundColor: Colors.white,
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(Icons.arrow_back_ios,
+          icon: Icon(
+            Icons.arrow_back_ios,
             size: 20,
-            color: Colors.black,),
-
+            color: Colors.black,
+          ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 40),
-          height: MediaQuery.of(context).size.height -50,
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Column(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: double.maxFinite,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text('Enregistrement', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),),
-                  SizedBox(height: 25,),
-                  Text(
-                    "Creation du compte",
-                    style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey[700]
+                  Column(
+                    children: <Widget>[
+                      Text(
+                        "Enregistrement",
+                        style: TextStyle(
+                            fontSize: 35, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Crée votre compte pour etre consulter",
+                        style: TextStyle(fontSize: 17, color: Colors.grey[700]),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            TextField(
+                              onChanged: (value) {
+                                setState(() => _prenom = value);
+                              },
+                              autofocus: true,
+                              cursorColor: Colors.blue,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                hintText: 'Votre prenom',
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextField(
+                              onChanged: (value) {
+                                setState(() => _email = value);
+                              },
+                              autofocus: true,
+                              cursorColor: Colors.blue,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                hintText: 'Votre email',
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextField(
+                              onChanged: (value) {
+                                setState(() => _password = value);
+                              },
+                              obscureText: true,
+                              autofocus: true,
+                              cursorColor: Colors.blue,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[600])),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                hintText: 'Votre mot de passe',
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            TextField(
+                              onChanged: (value) {
+                                setState(() => _password = value);
+                              },
+                              obscureText: true,
+                              autofocus: true,
+                              cursorColor: Colors.blue,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0, horizontal: 10),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[600])),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey[400])),
+                                hintText: 'Confirmation mot de passe',
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 50),
+                    child: Container(
+                      child: MaterialButton(
+                        minWidth: double.infinity,
+                        height: 52,
+                        onPressed: () async {
+                          print(_email);
+                          print(_password);
+                        },
+                        color: Color(0xff0095FF),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Text(
+                          "S'inscrire",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-              Column(
-                children: <Widget>[
-                  inputFile(label: "Votre nom"),
-                  inputFile(label: "Votre prenom"),
-                  inputFile(label: "Votre email"),
-                  inputFile(label: "Votre mot de passe", obscureText: true),
-                  inputFile(label: "Confirmation mot de passe", obscureText: true)
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.only(top: 30, left: 3),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border(
-                      bottom: BorderSide(color: Colors.black),
-                      top: BorderSide(color: Colors.black),
-                      left: BorderSide(color: Colors.black),
-                      right: BorderSide(color: Colors.black),
-                    )
-                ),
-                child: MaterialButton(
-                  minWidth: double.infinity,
-                  height: 60,
-                  onPressed: (){},
-                  color: Color(0xff0095FF),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50)
-                  ),
-                  child: Text(
-                    "S'inscrire",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                        color: Colors.white
-                    ),
-                  ),
-                )
-              )
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
   }
-}
-
-Widget inputFile({label, obscureText = false}){
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color: Colors.black87
-        ),
-      ),
-      SizedBox(height: 5,),
-      TextField(
-        obscureText: obscureText,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: Colors.grey[400]
-                )
-            ),
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[400])
-            )
-        ),
-      ),
-      SizedBox(height: 10,)
-    ],
-  );
 }
