@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/services/auth/auth.dart';
+import 'package:flutter_app/ui/components/loader.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,22 +10,31 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final AuthService authService = AuthService();
-  String _email = "", _password = "";
+
+  final _formKey = GlobalKey<FormState>();
+
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  bool _isObscure = true;
+  String error = '';
+  bool loader = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
+    return loader
+        ? Loader()
+        : Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              elevation: 0,
+              brightness: Brightness.light,
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
             Icons.arrow_back_ios,
             size: 20,
             color: Colors.black,
@@ -58,54 +68,82 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        TextField(
-                          onChanged: (value) {
-                            setState(() => _email = value);
-                          },
-                          autofocus: true,
-                          cursorColor: Colors.blue,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey[400])),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey[400])),
-                            hintText: 'Votre email',
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        TextField(
-                          onChanged: (value) {
-                            setState(() => _password = value);
-                          },
-                          obscureText: true,
-                          autofocus: true,
-                          cursorColor: Colors.blue,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 0, horizontal: 10),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey[600])),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey[400])),
-                            hintText: 'Votre mot de passe',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      padding: EdgeInsets.symmetric(horizontal: 40),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  TextFormField(
+                                    controller: _email,
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
+                                        return 'Please enter some text';
+                                      }
+                                      if (!RegExp(r'\S+@\S+\.\S+')
+                                          .hasMatch(value)) {
+                                        return 'Please enter a valid email address';
+                                      }
+                                      return null;
+                                    },
+                                    autofocus: true,
+                                    cursorColor: Colors.blue,
+                                    decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 0, horizontal: 10),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.grey[400])),
+                                      border: OutlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.grey[400])),
+                                      hintText: 'Votre email',
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  TextFormField(
+                                    controller: _password,
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.trim().isEmpty) {
+                                        return 'Please enter some text';
+                                      }
+                                      if (value.trim().length < 5) {
+                                        return 'Password must be at least 6 characters in length';
+                                      }
+                                      return null;
+                                    },
+                                    obscureText: _isObscure,
+                                    autofocus: true,
+                                    cursorColor: Colors.blue,
+                                    decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 10),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey[600])),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.grey[400])),
+                                        hintText: 'Votre mot de passe',
+                                        suffixIcon: IconButton(
+                                            icon: Icon(_isObscure
+                                                ? Icons.visibility
+                                                : Icons.visibility_off),
+                                            onPressed: () {
+                                              setState(() {
+                                                _isObscure = !_isObscure;
+                                              });
+                                            })),
+                                  ),
+                                ],
+                              ),
+                            )),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     child: Container(
@@ -113,9 +151,18 @@ class _LoginPageState extends State<LoginPage> {
                         minWidth: double.infinity,
                         height: 52,
                         onPressed: () async {
-                          print(_email);
-                          print(_password);
-                        },
+                                if (_formKey.currentState.validate()) {
+                                  setState(() => loader = true);
+                                  dynamic result = await authService
+                                      .signinWithEmailAndPassword(
+                                          _email.text, _password.text);
+                                  if (result == null) {
+                                    setState(() {
+                                      loader = false;
+                                    });
+                                  }
+                                }
+                              },
                         color: Color(0xff0095FF),
                         elevation: 0,
                         shape: RoundedRectangleBorder(

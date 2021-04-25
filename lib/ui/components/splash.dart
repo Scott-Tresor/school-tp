@@ -2,24 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/services/auth/auth.dart';
 import 'package:flutter_app/ui/auth/login.dart';
 import 'package:flutter_app/ui/auth/register.dart';
+import 'package:flutter_app/ui/components/loader.dart';
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
+  @override
+  _SplashPageState createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
   final AuthService _authService = AuthService();
+  bool loader = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Column(
-                children: [
+    return loader
+        ? Loader()
+        : Scaffold(
+            body: SafeArea(
+              child: Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Column(
+                      children: [
                   Text(
                     "Bienvenue",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
@@ -58,9 +67,9 @@ class SplashPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20)),
                     child: Text(
                       "Connexion",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
-                    ),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 17),
+                          ),
                   ),
                   SizedBox(
                     height: 10,
@@ -92,12 +101,16 @@ class SplashPage extends StatelessWidget {
                     minWidth: double.infinity,
                     height: 50,
                     onPressed: () async {
-                      dynamic result = await _authService.signInAnonymous();
-                      if (result == null) {
-                        print('Error de connexion');
-                      }
-                      print(result.uid);
-                    },
+                      setState(() => loader = true);
+                            dynamic result =
+                                await _authService.signInAnonymous();
+                            if (result == null) {
+                              setState(() {
+                                loader = false;
+                                print('Error de connexion');
+                              });
+                            }
+                          },
                     color: Color(0xFF898585),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -118,3 +131,4 @@ class SplashPage extends StatelessWidget {
     );
   }
 }
+
