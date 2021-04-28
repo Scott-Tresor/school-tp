@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/services/auth/auth.dart';
-import 'package:flutter_app/services/storage/DatabaseService.dart';
+import 'package:flutter_app/ui/apps/pages/about.dart';
+import 'package:flutter_app/ui/apps/pages/dashboard.dart';
 import 'package:flutter_app/ui/apps/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -13,13 +14,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<QuerySnapshot>.value(
-      value: DatabaseService().message,
       initialData: null,
       child: Scaffold(
-          backgroundColor: Color.fromRGBO(244, 243, 243, 1),
+          backgroundColor: Colors.deepPurpleAccent,
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
+            backgroundColor: Colors.deepPurpleAccent,
             elevation: 0,
+            actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
           ),
           drawer: new Drawer(
               child: new ListView(
@@ -32,11 +34,11 @@ class HomePage extends StatelessWidget {
                 accountEmail: new Text("kprathap23@gmail.com",
                     style: TextStyle(color: Colors.black)),
                 decoration: new BoxDecoration(
-                  image: new DecorationImage(
-                    image: new ExactAssetImage('assets/images/lake.jpeg'),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                    image: new DecorationImage(
+                      image: new ExactAssetImage('assets/images/lake.jpeg'),
+                      fit: BoxFit.cover,
+                    ),
+                    color: Colors.deepPurpleAccent),
                 currentAccountPicture: CircleAvatar(
                     backgroundImage: NetworkImage(
                         "https://randomuser.me/api/portraits/men/46.jpg")),
@@ -59,7 +61,8 @@ class HomePage extends StatelessWidget {
                   leading: Icon(Icons.info),
                   title: new Text("About"),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AboutPage()));
                   }),
               new ListTile(
                 leading: Icon(Icons.power_settings_new),
@@ -70,7 +73,7 @@ class HomePage extends StatelessWidget {
               ),
             ],
           )),
-          body: Scaffold()),
+          body: DashboardPage()),
     );
   }
 }
